@@ -1,11 +1,37 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
-import pluginReact from "eslint-plugin-react";
-
+import pluginJest from "eslint-plugin-jest";
 
 export default [
-  {files: ["**/*.{js,mjs,cjs,jsx}"]},
-  {languageOptions: { globals: globals.browser }},
+  {
+    ignores: [
+      "node_modules/**",     
+      "coverage/**"          
+    ],
+    files: ["**/*.{js,mjs,cjs,jsx}"], 
+    languageOptions: {
+      ecmaVersion: 12,
+      sourceType: "module",
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+  },
   pluginJs.configs.recommended,
-  pluginReact.configs.flat.recommended,
+  {
+    plugins: {
+      jest: pluginJest,
+    },
+    files: ["**/*.test.js"],
+    rules: {
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error",
+    },
+  },
 ];
+
